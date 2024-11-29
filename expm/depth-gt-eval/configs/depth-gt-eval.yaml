@@ -1,0 +1,55 @@
+name: depth-gt-eval
+data:
+  target: mt_pipe.src.datasets.ConcatSet
+  params:
+    root:
+      - KITTI-2012
+      - KITTI-2015
+    conf:
+      - target: src.datasets.KITTIWithDepth
+        split_mix: { "train": [], "val": ["train"] }
+      - target: src.datasets.KITTIWithDepth
+        split_mix: { "train": ["train"], "val": [] }
+learner:
+  target: src.learners.DepthLearner
+  freeze:
+    - encoder
+  params: 
+    encoder:
+      target: src.models.backbone.BackBone
+      params:
+        enc_name: ConvNeXt
+loss:
+  target: src.losses.GTDepthLoss
+optimizer:
+  target: torch.optim.AdamW
+  params:
+    lr: 3e-3
+    betas: [0.9, 0.999]
+    weight_decay: 1e-6
+lr_scheduler:
+  target: torch.optim.lr_scheduler.CosineAnnealingLR
+  params:
+    T_max: 10
+    eta_min: 3e-8
+train:
+  loader_params:
+    batch_size: 32
+    num_workers: 2
+  tollerance: 5
+  epochs: 50
+  visualizers:
+    vimzy:
+      target: src.visualizers.depth_visualizer.depth_visualizer
+val:
+  loader_params:
+    batch_size: 32
+    num_workers: 10
+test:
+  split: train
+  loader_params:
+    batch_size: 32
+    num_workers: 10
+  evaluators:
+    depth:
+      target: mt_pipe.src.evaluators.DepthEvaluator

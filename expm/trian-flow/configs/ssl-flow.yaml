@@ -1,0 +1,37 @@
+name: TrianFlow-ssl-flow
+data:
+    target: src.datasets.MPISintel
+    params:
+        root: MPISintel/
+        img_wh: [832, 256]
+learner:
+    target: src.learners.FlowLearner
+    params:
+        encoder:
+            target: src.models.encoders.PWCEncoder
+loss:
+    target: src.losses.SSLFlowLoss
+    params:
+        loss_weights:
+            loss_pixel: 0.15
+            loss_ssim: 0.85
+            loss_flow_smooth: 10
+            loss_flow_consis: 0.01
+optimizer:
+    target: torch.optim.Adam
+    params:
+        lr: 0.0001
+visualizers:
+    gt-vs-pred:
+        target: src.visualizers.FlowVisualizer
+        params:
+            max_imgs_per_batch: 2
+lr_scheduler:
+    target: torch.optim.lr_scheduler.CosineAnnealingLR
+    params:
+        T_max: 100
+train:
+    loader_params:
+        batch_size: 8
+        num_workers: 1
+    epochs: 100

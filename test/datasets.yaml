@@ -1,0 +1,337 @@
+imagenet-vicreg:
+    target: src.datasets.ImageNetVICReg
+    root: ./data/ImageNet-2012
+    splits: [train, val]
+    params:
+        img_wh: [224, 224]
+    sample_conf:
+        view1:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 224, 224]
+        view2:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 224, 224]
+imagenet-classify:
+    target: src.datasets.ImageNetClassify
+    root: ./data/ImageNet-2012
+    splits: [train, val]
+    params:
+        img_wh: [224, 224]
+    sample_conf:
+        img:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 224, 224]
+        lbl:
+            dtype: int
+            min: 0
+            max: 999
+kitti:
+    target: src.datasets.KITTI
+    root:
+        [
+            ./data/KITTI-2012,
+            ./data/KITTI-2012-multiview,
+            ./data/KITTI-2015,
+            ./data/KITTI-2015-multiview,
+            ./data/KITTI,
+        ]
+    splits: [train, val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+        img2:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+kitti-with-calib:
+    target: src.datasets.KITTIWithCalibration
+    root: [./data/KITTI-2012, ./data/KITTI]
+    splits: [train, val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        K:
+            dtype: torch.float32
+            shape: [1, 3, 3]
+        K_inv:
+            dtype: torch.float32
+            shape: [1, 3, 3]
+        img1:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+        img2:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+kitti-with-depth:
+    target: src.datasets.KITTIWithDepth
+    root: [./data/KITTI-2012, ./data/KITTI-2015, ./data/KITTI]
+    splits: [train]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+        depth_map:
+            dtype: torch.float32
+            # max: 1 # TODO: what is the range of the depth_map
+            min: 0
+            shape: [1, 64, 128]
+kitti-with-flow:
+    target: src.datasets.KITTIWithFlow
+    root: [./data/KITTI-2012, ./data/KITTI-2015]
+    splits: [train]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        img2:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        flow_gt:
+            shape: [2, 64, 128]
+            min: -128
+            max: 128
+            dtype: torch.float32
+        occ_gt:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+        valid:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+hd1k:
+    target: src.datasets.HD1K
+    root: ./data/HD1K/
+    splits: [train, val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        img2:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        flow_gt:
+            shape: [2, 64, 128]
+            min: -128
+            max: 128
+            dtype: torch.float32
+        occ_gt:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+        valid:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+mpi-sintel-train:
+    target: src.datasets.MPISintel
+    root: ./data/MPISintel/
+    splits: [train]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        img2:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        flow_gt:
+            shape: [2, 64, 128]
+            min: -128
+            max: 128
+            dtype: torch.float32
+        occ_gt:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+        valid:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+mpi-sintel-val:
+    target: src.datasets.MPISintel
+    root: ./data/MPISintel/
+    splits: [val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        img2:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        flow_gt: null
+        occ_gt: null
+        valid: null
+flying-things:
+    target: src.datasets.FlyingThings
+    root: ./data/FlyingThings/
+    splits: [train, val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        img2:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        flow_gt: null
+        occ_gt: null
+        valid: null
+flying-chairs:
+    target: src.datasets.FlyingChairs
+    root: ./data/FlyingChairs/
+    splits: [train, val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img1:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        img2:
+            shape: [3, 64, 128]
+            min: 0
+            max: 1
+            dtype: torch.float32
+        flow_gt:
+            shape: [2, 64, 128]
+            min: -128
+            max: 128
+            dtype: torch.float32
+        occ_gt:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+        valid:
+            shape: [64, 128]
+            unique: [0, 1]
+            dtype: numpy.float32
+coco-segment:
+    target: src.datasets.COCOSegment
+    root: ./data/COCO-2017
+    splits: [train, val]
+    params:
+        img_wh: [224, 224]
+    sample_conf:
+        img:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 224, 224]
+        seg:
+            dtype: torch.float32
+            shape: [224, 224]
+            unique_range: [0, 80]
+pascal-voc:
+    target: src.datasets.PascalVOC
+    root: ./data/PascalVOC-2012
+    splits: [train, val]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+        seg:
+            dtype: torch.float32
+            shape: [64, 128]
+            unique_range: [0, 21]
+davis2017:
+    target: src.datasets.Davis
+    root: ./data/Davis
+    splits: [train]
+    params:
+        img_wh: [64, 128]
+    sample_conf:
+        img:
+            dtype: torch.float32
+            max: 1
+            min: 0
+            shape: [3, 64, 128]
+        seg:
+            dtype: torch.float32
+            shape: [64, 128]
+            unique_range: [0, 60]
+# cityscapes:
+#     target: src.datasets.Cityscape
+#     root: ./data/Cityscapes
+#     splits: [train, val, test]
+#     params:
+#         img_wh: [64, 128]
+#     sample_conf:
+#         img:
+#             dtype: torch.float32
+#             max: 1
+#             min: 0
+#             shape: [3, 64, 128]
+#         seg:
+#             dtype: torch.float32
+#             shape: [30, 64, 128]
+#             unique: [0, 1]
+# ade20k:
+#     target: src.datasets.ADE20k
+#     root: ./data/ADE20K-2021
+#     splits: [train, val]
+#     params:
+#         img_wh: [64, 128]
+#     sample_conf:
+#         img:
+#             dtype: torch.float32
+#             max: 1
+#             min: 0
+#             shape: [3, 64, 128]
+#         seg:
+#             dtype: torch.float32
+#             shape: [3687, 64, 128]
+#             unique: [0, 1]

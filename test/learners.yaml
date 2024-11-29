@@ -1,0 +1,262 @@
+# TODO: implement load_checkpoint validation
+content-learner-1:
+    encoder:
+        target: src.models.BackBone
+        params:
+            enc_name: ConvNeXt
+    learner:
+        target: src.learners.ContentLearner
+    input_conf: { view1: [8, 3, 128, 128], view2: [8, 3, 128, 128] }
+    output_conf:
+        {
+            X_one: { shape: [8, 768], dtype: torch.float32 },
+            X_two: { shape: [8, 768], dtype: torch.float32 },
+            Y_one: { shape: [8, 8192], dtype: torch.float32 },
+            Y_two: { shape: [8, 8192], dtype: torch.float32 },
+        }
+content-learner-2:
+    learner:
+        target: src.learners.ContentLearner
+        params:
+            encoder:
+                target: src.models.BackBone
+                params:
+                    enc_name: ConvNeXt
+    input_conf: { view1: [8, 3, 128, 128], view2: [8, 3, 128, 128] }
+    output_conf:
+        {
+            X_one: { shape: [8, 768], dtype: torch.float32 },
+            X_two: { shape: [8, 768], dtype: torch.float32 },
+            Y_one: { shape: [8, 8192], dtype: torch.float32 },
+            Y_two: { shape: [8, 8192], dtype: torch.float32 },
+        }
+flow-learner-1:
+    encoder:
+        target: src.models.BackBone
+        params:
+            enc_name: ConvNeXt
+    learner:
+        target: src.learners.FlowLearner
+    input_conf: { img1: [8, 3, 64, 128], img2: [8, 3, 64, 128] }
+    output_conf:
+        {
+            flow_pred: { shape: [8, 2, 64, 128], dtype: torch.float32 },
+            feature_pyramid_one:
+                {
+                    emb: { shape: [8, 768], dtype: torch.float32 },
+                    l6: { shape: [8, 768, 1, 2], dtype: torch.float32 },
+                    l5: { shape: [8, 384, 2, 4], dtype: torch.float32 },
+                    l4: { shape: [8, 192, 4, 8], dtype: torch.float32 },
+                    l3: { shape: [8, 96, 8, 16], dtype: torch.float32 },
+                    l2: { shape: [8, 48, 16, 32], dtype: torch.float32 },
+                    l1: { shape: [8, 48, 32, 64], dtype: torch.float32 },
+                },
+            feature_pyramid_two:
+                {
+                    emb: { shape: [8, 768], dtype: torch.float32 },
+                    l6: { shape: [8, 768, 1, 2], dtype: torch.float32 },
+                    l5: { shape: [8, 384, 2, 4], dtype: torch.float32 },
+                    l4: { shape: [8, 192, 4, 8], dtype: torch.float32 },
+                    l3: { shape: [8, 96, 8, 16], dtype: torch.float32 },
+                    l2: { shape: [8, 48, 16, 32], dtype: torch.float32 },
+                    l1: { shape: [8, 48, 32, 64], dtype: torch.float32 },
+                },
+            optical_flows:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+            optical_flows_rev:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+            img1_valid_masks:
+                [
+                    { shape: [8, 1, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 1, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 1, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 1, 8, 16], dtype: torch.float32 },
+                ],
+            img2_valid_masks:
+                [
+                    { shape: [8, 1, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 1, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 1, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 1, 8, 16], dtype: torch.float32 },
+                ],
+            fwd_flow_diff_pyramid:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+            bwd_flow_diff_pyramid:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+        }
+flow-learner-2:
+    learner:
+        target: src.learners.FlowLearner
+        params:
+            encoder:
+                target: src.models.BackBone
+                params:
+                    enc_name: ConvNeXt
+    input_conf: { img1: [8, 3, 64, 128], img2: [8, 3, 64, 128] }
+    output_conf:
+        {
+            flow_pred: { shape: [8, 2, 64, 128], dtype: torch.float32 },
+            feature_pyramid_one:
+                {
+                    emb: { shape: [8, 768], dtype: torch.float32 },
+                    l6: { shape: [8, 768, 1, 2], dtype: torch.float32 },
+                    l5: { shape: [8, 384, 2, 4], dtype: torch.float32 },
+                    l4: { shape: [8, 192, 4, 8], dtype: torch.float32 },
+                    l3: { shape: [8, 96, 8, 16], dtype: torch.float32 },
+                    l2: { shape: [8, 48, 16, 32], dtype: torch.float32 },
+                    l1: { shape: [8, 48, 32, 64], dtype: torch.float32 },
+                },
+            feature_pyramid_two:
+                {
+                    emb: { shape: [8, 768], dtype: torch.float32 },
+                    l6: { shape: [8, 768, 1, 2], dtype: torch.float32 },
+                    l5: { shape: [8, 384, 2, 4], dtype: torch.float32 },
+                    l4: { shape: [8, 192, 4, 8], dtype: torch.float32 },
+                    l3: { shape: [8, 96, 8, 16], dtype: torch.float32 },
+                    l2: { shape: [8, 48, 16, 32], dtype: torch.float32 },
+                    l1: { shape: [8, 48, 32, 64], dtype: torch.float32 },
+                },
+            optical_flows:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+            optical_flows_rev:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+            img1_valid_masks:
+                [
+                    { shape: [8, 1, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 1, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 1, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 1, 8, 16], dtype: torch.float32 },
+                ],
+            img2_valid_masks:
+                [
+                    { shape: [8, 1, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 1, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 1, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 1, 8, 16], dtype: torch.float32 },
+                ],
+            fwd_flow_diff_pyramid:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+            bwd_flow_diff_pyramid:
+                [
+                    { shape: [8, 2, 64, 128], dtype: torch.float32 },
+                    { shape: [8, 2, 32, 64], dtype: torch.float32 },
+                    { shape: [8, 2, 16, 32], dtype: torch.float32 },
+                    { shape: [8, 2, 8, 16], dtype: torch.float32 },
+                ],
+        }
+# depth-learner-1:
+#     encoder:
+#         target: src.models.BackBone
+#         params:
+#             enc_name: ConvNeXt
+#     learner:
+#         target: src.learners.DepthLearner
+#     input_conf: { img: [8, 3, 64, 128], depth_map: [8, 1, 64, 128] }
+#     output_conf:
+#         {
+#             l2: { shape: [8, 1, 2, 4], dtype: torch.float32 },
+#             l3: { shape: [8, 1, 4, 8], dtype: torch.float32 },
+#             l4: { shape: [8, 1, 8, 16], dtype: torch.float32 },
+#             l5: { shape: [8, 1, 16, 32], dtype: torch.float32 },
+#             l6: { shape: [8, 1, 32, 64], dtype: torch.float32 },
+#             l7: { shape: [8, 1, 64, 128], dtype: torch.float32 },
+#             pred: { shape: [8, 1, 64, 128], dtype: torch.float32 },
+#         }
+# depth-learner-2:
+#     learner:
+#         target: src.learners.DepthLearner
+#         params:
+#             encoder:
+#                 target: src.models.BackBone
+#                 params:
+#                     enc_name: ConvNeXt
+#     input_conf: { img: [8, 3, 64, 128], depth_map: [8, 1, 64, 128] }
+#     output_conf:
+#         {
+#             l2: { shape: [8, 1, 2, 4], dtype: torch.float32 },
+#             l3: { shape: [8, 1, 4, 8], dtype: torch.float32 },
+#             l4: { shape: [8, 1, 8, 16], dtype: torch.float32 },
+#             l5: { shape: [8, 1, 16, 32], dtype: torch.float32 },
+#             l6: { shape: [8, 1, 32, 64], dtype: torch.float32 },
+#             l7: { shape: [8, 1, 64, 128], dtype: torch.float32 },
+#             pred: { shape: [8, 1, 64, 128], dtype: torch.float32 },
+#         }
+class-learner-1:
+    encoder:
+        target: src.models.BackBone
+        params:
+            enc_name: ConvNeXt
+    learner:
+        target: src.learners.ClassLearner
+        params:
+            n_classes: 1000
+    input_conf: { img: [32, 3, 128, 128], lbl: [32] }
+    output_conf: { logits: { shape: [32, 1000], dtype: torch.float32 } }
+class-learner-2:
+    learner:
+        target: src.learners.ClassLearner
+        params:
+            n_classes: 1000
+            encoder:
+                target: src.models.BackBone
+                params:
+                    enc_name: ConvNeXt
+    input_conf: { img: [32, 3, 128, 128], lbl: [32] }
+    output_conf: { logits: { shape: [32, 1000], dtype: torch.float32 } }
+segment-learner-1:
+    encoder:
+        target: src.models.BackBone
+        params:
+            enc_name: ConvNeXt
+    learner:
+        target: src.learners.SegmentLearner
+        params:
+            n_classes: 80
+    input_conf: { img: [8, 3, 480, 640], seg: [8, 3, 480, 640] }
+    output_conf: { seg: { shape: [8, 80, 480, 640], dtype: torch.float32 } }
+segment-learner-2:
+    learner:
+        target: src.learners.SegmentLearner
+        params:
+            n_classes: 80
+            encoder:
+                target: src.models.BackBone
+                params:
+                    enc_name: ConvNeXt
+    input_conf: { img: [8, 3, 480, 640], seg: [8, 3, 480, 640] }
+    output_conf: { seg: { shape: [8, 80, 480, 640], dtype: torch.float32 } }

@@ -1,0 +1,8 @@
+# Potential Abalations
+
+-   Shared flow estimator
+-   MC-JEPA had only done regression for one side. Do it for both sides
+-   Add a global similarity loss to the reconstuction loss
+-   Supervise depth network in intermedate levels
+-   Feed a laplacian pyramid of the feature pyramid levels to the depth decoder
+-   Unify the flow and depth decoders

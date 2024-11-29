@@ -1,0 +1,291 @@
+content-loss:
+    loss_fn:
+        target: src.losses.ContentLoss
+    input_conf:
+        info:
+            {
+                X_one: [8, 768],
+                X_two: [8, 768],
+                Y_one: [8, 8192],
+                Y_two: [8, 8192],
+            }
+        batch: { view1: [8, 3, 128, 128], view2: [8, 3, 128, 128] }
+    output_conf:
+        main:
+            {
+                tot: { shape: [], dtype: torch.float32 },
+                Content_X:
+                    {
+                        tot: { shape: [], dtype: torch.float32 },
+                        Inv: { shape: [], dtype: torch.float32 },
+                        Var: { shape: [], dtype: torch.float32 },
+                        Cov: { shape: [], dtype: torch.float32 },
+                    },
+                Content_Y:
+                    {
+                        tot: { shape: [], dtype: torch.float32 },
+                        Inv: { shape: [], dtype: torch.float32 },
+                        Var: { shape: [], dtype: torch.float32 },
+                        Cov: { shape: [], dtype: torch.float32 },
+                    },
+            }
+ssl-flow-loss:
+    loss_fn:
+        target: src.losses.SSLFlowLoss
+    input_conf:
+        info:
+            {
+                feature_pyramid_one:
+                    {
+                        emb: [8, 768],
+                        l6: [8, 768, 1, 2],
+                        l5: [8, 384, 2, 4],
+                        l4: [8, 192, 4, 8],
+                        l3: [8, 96, 8, 16],
+                        l2: [8, 48, 16, 32],
+                        l1: [8, 48, 32, 64],
+                    },
+                feature_pyramid_two:
+                    {
+                        emb: [8, 768],
+                        l6: [8, 768, 1, 2],
+                        l5: [8, 384, 2, 4],
+                        l4: [8, 192, 4, 8],
+                        l3: [8, 96, 8, 16],
+                        l2: [8, 48, 16, 32],
+                        l1: [8, 48, 32, 64],
+                    },
+                optical_flows:
+                    [
+                        [8, 2, 64, 128],
+                        [8, 2, 32, 64],
+                        [8, 2, 16, 32],
+                        [8, 2, 8, 16],
+                    ],
+                optical_flows_rev:
+                    [
+                        [8, 2, 64, 128],
+                        [8, 2, 32, 64],
+                        [8, 2, 16, 32],
+                        [8, 2, 8, 16],
+                    ],
+                img1_valid_masks:
+                    [
+                        [8, 1, 64, 128],
+                        [8, 1, 32, 64],
+                        [8, 1, 16, 32],
+                        [8, 1, 8, 16],
+                    ],
+                img2_valid_masks:
+                    [
+                        [8, 1, 64, 128],
+                        [8, 1, 32, 64],
+                        [8, 1, 16, 32],
+                        [8, 1, 8, 16],
+                    ],
+                fwd_flow_diff_pyramid:
+                    [
+                        [8, 2, 64, 128],
+                        [8, 2, 32, 64],
+                        [8, 2, 16, 32],
+                        [8, 2, 8, 16],
+                    ],
+                bwd_flow_diff_pyramid:
+                    [
+                        [8, 2, 64, 128],
+                        [8, 2, 32, 64],
+                        [8, 2, 16, 32],
+                        [8, 2, 8, 16],
+                    ],
+            }
+        batch: { img1: [8, 3, 64, 128], img2: [8, 3, 64, 128] }
+    output_conf:
+        main:
+            {
+                tot: { shape: [], dtype: torch.float32 },
+                loss_pixel: { shape: [], dtype: torch.float32 },
+                loss_ssim: { shape: [], dtype: torch.float32 },
+                loss_flow_smooth: { shape: [], dtype: torch.float32 },
+                loss_flow_consis: { shape: [], dtype: torch.float32 },
+            }
+# gt-flow-loss
+# ssl-depth-loss:
+#     loss_fn:
+#         target: src.losses.DepthLoss
+#     input_conf:
+#         info:
+#             {
+#                 flow:
+#                     {
+#                         feature_pyramid_one:
+#                             {
+#                                 emb: [4, 768],
+#                                 l1: [4, 768, 1, 2],
+#                                 l2: [4, 384, 2, 4],
+#                                 l3: [4, 192, 4, 8],
+#                                 l4: [4, 96, 8, 16],
+#                                 l5: [4, 48, 16, 32],
+#                                 l6: [4, 48, 32, 64],
+#                             },
+#                         feature_pyramid_two:
+#                             {
+#                                 emb: [4, 768],
+#                                 l1: [4, 768, 1, 2],
+#                                 l2: [4, 384, 2, 4],
+#                                 l3: [4, 192, 4, 8],
+#                                 l4: [4, 96, 8, 16],
+#                                 l5: [4, 48, 16, 32],
+#                                 l6: [4, 48, 32, 64],
+#                             },
+#                         warp_feature_pyramid_fwd:
+#                             {
+#                                 l2: [4, 384, 2, 4],
+#                                 l3: [4, 192, 4, 8],
+#                                 l4: [4, 96, 8, 16],
+#                                 l5: [4, 48, 16, 32],
+#                                 l6: [4, 48, 32, 64],
+#                                 l7: [4, 3, 64, 128],
+#                             },
+#                         warp_feature_pyramid_bwd:
+#                             {
+#                                 l2: [4, 384, 2, 4],
+#                                 l3: [4, 192, 4, 8],
+#                                 l4: [4, 96, 8, 16],
+#                                 l5: [4, 48, 16, 32],
+#                                 l6: [4, 48, 32, 64],
+#                                 l7: null,
+#                             },
+#                         flow_fwd:
+#                             {
+#                                 l2: [4, 2, 2, 4],
+#                                 l3: [4, 2, 4, 8],
+#                                 l4: [4, 2, 8, 16],
+#                                 l5: [4, 2, 16, 32],
+#                                 l6: [4, 2, 32, 64],
+#                                 l7: [4, 2, 64, 128],
+#                             },
+#                         flow_bwd:
+#                             {
+#                                 l2: [4, 2, 2, 4],
+#                                 l3: [4, 2, 4, 8],
+#                                 l4: [4, 2, 8, 16],
+#                                 l5: [4, 2, 16, 32],
+#                                 l6: [4, 2, 32, 64],
+#                                 l7: [4, 2, 64, 128],
+#                             },
+#                         img1_valid_mask:
+#                             {
+#                                 l2: [4, 1, 2, 4],
+#                                 l3: [4, 1, 4, 8],
+#                                 l4: [4, 1, 8, 16],
+#                                 l5: [4, 1, 16, 32],
+#                                 l6: [4, 1, 32, 64],
+#                                 l7: [4, 1, 64, 128],
+#                             },
+#                         img2_valid_mask:
+#                             {
+#                                 l2: [4, 1, 2, 4],
+#                                 l3: [4, 1, 4, 8],
+#                                 l4: [4, 1, 8, 16],
+#                                 l5: [4, 1, 16, 32],
+#                                 l6: [4, 1, 32, 64],
+#                                 l7: [4, 1, 64, 128],
+#                             },
+#                         img1_flow_diff_mask:
+#                             {
+#                                 l2: [4, 2, 2, 4],
+#                                 l3: [4, 2, 4, 8],
+#                                 l4: [4, 2, 8, 16],
+#                                 l5: [4, 2, 16, 32],
+#                                 l6: [4, 2, 32, 64],
+#                                 l7: [4, 2, 64, 128],
+#                             },
+#                         img2_flow_diff_mask:
+#                             {
+#                                 l2: [4, 2, 2, 4],
+#                                 l3: [4, 2, 4, 8],
+#                                 l4: [4, 2, 8, 16],
+#                                 l5: [4, 2, 16, 32],
+#                                 l6: [4, 2, 32, 64],
+#                                 l7: [4, 2, 64, 128],
+#                             },
+#                     },
+#                 depth1:
+#                     {
+#                         l2: [4, 1, 2, 4],
+#                         l3: [4, 1, 4, 8],
+#                         l4: [4, 1, 8, 16],
+#                         l5: [4, 1, 16, 32],
+#                         l6: [4, 1, 32, 64],
+#                         l7: [4, 1, 64, 128],
+#                         pred: [4, 1, 64, 128],
+#                     },
+#                 depth2:
+#                     {
+#                         l2: [4, 1, 2, 4],
+#                         l3: [4, 1, 4, 8],
+#                         l4: [4, 1, 8, 16],
+#                         l5: [4, 1, 16, 32],
+#                         l6: [4, 1, 32, 64],
+#                         l7: [4, 1, 64, 128],
+#                         pred: [4, 1, 64, 128],
+#                     },
+#             }
+#         batch:
+#             {
+#                 img1: [4, 3, 64, 128],
+#                 img2: [4, 3, 64, 128],
+#                 K: [4, 1, 3, 3],
+#                 K_inv: [4, 1, 3, 3],
+#             }
+#     output_conf:
+#         main:
+#             {
+#                 tot: { shape: [], dtype: torch.float32 },
+#                 pt_depth_loss: { shape: [], dtype: torch.float32 },
+#                 pj_depth_loss: { shape: [], dtype: torch.float32 },
+#                 flow_loss: { shape: [], dtype: torch.float32 },
+#                 depth_smooth_loss: { shape: [], dtype: torch.float32 },
+#             }
+#         none_mask:
+#             {
+#                 pt_depth_loss: null,
+#                 pj_depth_loss: null,
+#                 flow_loss: null,
+#                 depth_smooth_loss: null,
+#             }
+# gt-depth-loss:
+#     loss_fn:
+#         target: src.losses.GTDepthLoss
+#     input_conf:
+#         info:
+#             {
+#                 l2: [8, 1, 2, 4],
+#                 l3: [8, 1, 4, 8],
+#                 l4: [8, 1, 8, 16],
+#                 l5: [8, 1, 16, 32],
+#                 l6: [8, 1, 32, 64],
+#                 l7: [8, 1, 64, 128],
+#                 pred: [8, 1, 64, 128],
+#             }
+#         batch: { img: [8, 3, 64, 128], depth_map: [8, 1, 64, 128] }
+#     output_conf:
+#         main:
+#             {
+#                 tot: { shape: [], dtype: torch.float32 },
+#                 L1: { shape: [], dtype: torch.float32 },
+#                 Smooth: { shape: [], dtype: torch.float32 },
+#             }
+segmentation-loss:
+    loss_fn:
+        target: src.losses.SegmentationLoss
+    input_conf:
+        info: { seg: [80, 128, 128] }
+        batch: { seg: [80, 128, 128] }
+    output_conf:
+        main:
+            {
+                tot: { shape: [], dtype: torch.float32 },
+                Dice: { shape: [], dtype: torch.float32 },
+                BCEWithLogits: { shape: [], dtype: torch.float32 },
+            }

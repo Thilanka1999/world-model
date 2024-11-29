@@ -1,0 +1,50 @@
+name: content
+data:
+    target: src.datasets.ImageNetVICReg
+    params:
+        root: ImageNet-2012/
+        img_wh: [224, 224]
+learner:
+    target: mt_pipe.src.util.learner_mux.LearnerMux
+    params:
+        chldrn:
+            content_learner:
+                target: src.learners.ContentLearner
+        encoder:
+            target: src.models.backbone.BackBone
+            params:
+                enc_name: ConvNeXt
+loss:
+    target: src.losses.ContentLoss
+    params:
+        loss_weights:
+            vc_loss_X: [0.01, 0.04]
+            vic_loss_Y: [25, 25, 1]
+optimizer:
+    target: torch.optim.AdamW
+    params:
+        lr: 3e-4
+        betas: [0.9, 0.999]
+        weight_decay: 1e-6
+lr_scheduler:
+    target: torch.optim.lr_scheduler.CosineAnnealingLR
+    params:
+        T_max: 10
+        eta_min: 3e-8
+train:
+    loader_params:
+        batch_size: 384
+        num_workers: 8
+    tollerance: 5
+    epochs: 10
+checkpoints:
+    - name: e1
+      epoch: 0
+    - name: e3
+      epoch: 2
+    - name: e5
+      epoch: 4
+    - name: e7
+      epoch: 6
+    - name: e9
+      epoch: 8

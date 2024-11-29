@@ -1,0 +1,11 @@
+Find how time is estimated and estimate the time for the job
+implement model sharding and get rid of the local_device_maps thingy @avishka
+where did the BCEWithLogits come from in segmentation loss?
+validate the code of depth GT training @avishka
+validate the code of flow GT training @avishka
+Do the full validation @avishka
+Validate pascal-voc and davis
+fix the segmentation evaluator here and in unet repo @avishka
+train with gt-flow-loss
+
+implement sharding

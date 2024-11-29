@@ -1,0 +1,26 @@
+name: flow_gt_eval
+data:
+    target: src.datasets.KITTIWithFlow
+    params:
+        root: KITTI-2012/
+learner:
+    target: src.learners.FlowLearner
+    freeze:
+        - encoder
+    params:
+        encoder:
+            target: src.models.backbone.BackBone
+            params:
+                enc_name: ConvNeXt
+loss:
+    target: mt_pipe.src.losses.L2Loss
+optimizer:
+    target: torch.optim.SGD
+    params:
+        lr: 1e-4
+        weight_decay: 1e-6
+train:
+    loader_params:
+        batch_size: 8
+    tollerance: 5
+    epochs: 15

@@ -1,0 +1,46 @@
+name: classification
+data:
+    target: src.datasets.ImageNetClassify
+    params:
+        root: ImageNet-2012/
+learner:
+    target: src.learners.ClassLearner
+    freeze:
+        - encoder
+    params:
+        encoder:
+            target: src.models.backbone.BackBone
+            params:
+                enc_name: ConvNeXt
+        n_classes: 1000
+loss:
+    target: mt_pipe.src.losses.CrossEntropyLoss
+optimizer:
+    target: torch.optim.AdamW
+    params:
+        lr: 3e-3
+        betas: [0.9, 0.999]
+        weight_decay: 1e-6
+lr_scheduler:
+    target: torch.optim.lr_scheduler.CosineAnnealingLR
+    params:
+        T_max: 20
+        eta_min: 3e-8
+train:
+    loader_params:
+        batch_size: 32
+        num_workers: 2
+    tollerance: 5
+    epochs: 4
+val:
+    loader_params:
+        batch_size: 32
+        num_workers: 2
+test:
+    split: val
+    loader_params:
+        batch_size: 32
+        num_workers: 2
+    evaluators:
+        classify:
+            target: mt_pipe.src.evaluators.ClassificationEvaluator

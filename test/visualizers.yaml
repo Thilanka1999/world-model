@@ -1,0 +1,39 @@
+flow-visualizer:
+    target: src.visualizers.FlowVisualizer
+    params:
+        name: gt-vs-pred
+        max_imgs_per_batch: 2
+    input_conf:
+        info: {
+                flow_pred: [8, 2, 64, 128],
+                # ...rest
+            }
+        batch: {
+                flow_gt: [8, 2, 64, 128],
+                img1:
+                    {
+                        type: torch.Tensor,
+                        shape: [8, 3, 64, 128],
+                        min: 0.0,
+                        max: 1.0,
+                    },
+                # ...rest
+            }
+        epoch: { type: int, value: 1 }
+        loop: { type: str, value: train }
+# depth-visualizer: # TODO: @thilanka
+#     target: src.visualizers.DepthVisualizer
+#     params:
+#         name: gt-vs-pred
+#         max_imgs_per_batch: 2
+#     input_conf:
+#         info: {
+#                 pred: [8, 1, 64, 128],
+#                 # ...rest
+#             }
+#         batch: {
+#                 depth_map: [8, 1, 64, 128],
+#                 # ...rest
+#             }
+#         epoch: { type: int, value: 1 }
+#         loop: { type: str, value: train }

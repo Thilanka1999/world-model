@@ -1,0 +1,44 @@
+classification-eval:
+  target: mt_pipe.src.evaluators.ClassificationEvaluator
+  input_conf:
+    info: {
+        logits: [8, 10],
+        # ...rest
+      }
+    batch: {
+        lbl:
+          {
+            type: torch.Tensor,
+            shape: [8, 1],
+            unique: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          },
+        # ...rest
+      }
+# depth-eval: # TODO: @thilanka
+#     target: mt_pipe.src.evaluators.DepthEvaluator
+#     input_conf: {}
+# flow-eval: # TODO: @thilanka
+#     target: mt_pipe.src.evaluators.FlowEvaluator
+#     input_conf: {}
+segment-eval:
+  target: mt_pipe.src.evaluators.SegmentationEvaluator
+  input_conf:
+    info: {
+        logits: [32,1, 128, 128],
+        unique_range: [0, 79],
+    }
+    batch: {
+        seg:
+          {
+            type: torch.Tensor,
+            shape: [32,1, 128, 128],
+            unique_range: [0, 79],
+          },
+        img:
+          {
+            type: torch.Tensor,
+            shape: [32, 3, 128, 128],
+            unique_range: [0,255],
+          },
+        # ...rest
+      }
